@@ -38,9 +38,9 @@ resource "tencentcloud_cfs_auto_snapshot_policy" "policies" {
   hour          = try(each.value.hour, "3")
   policy_name   = each.value.policy_name
   alive_days    = try(each.value.alive_days, 7)
-  interval_days = try(each.value.interval_days, 1)
-  day_of_week = try(each.value.day_of_week, "1,2")
-  day_of_month = try(each.value.day_of_month, "2,3,4")
+  interval_days = try(each.value.interval_days, null) // 1
+  day_of_week = try(each.value.day_of_week, null) // "1,2"
+  day_of_month = try(each.value.day_of_month, null) //"2,3,4"
 }
 
 locals {
