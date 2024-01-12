@@ -32,3 +32,26 @@ resource "tencentcloud_cfs_access_rule" "cfs-access-rule" {
   rw_permission   = var.rw_permission[count.index]
   user_permission = var.user_permission[count.index]
 }
+
+resource "tencentcloud_cfs_auto_snapshot_policy" "policies" {
+  for_each = var.auto_snapshot_policies
+  hour          = try(each.value.hour, "3")
+  policy_name   = each.value.policy_name
+  alive_days    = try(each.value.alive_days, 7)
+  interval_days = try(each.value.interval_days, 1)
+  day_of_week = try(each.value.day_of_week, "1,2")
+  day_of_month = try(each.value.day_of_month, "2,3,4")
+}
+
+locals {
+  auto_snapshot_policy_attachments = { for k, cfs in var.cfs_map: k => {
+      file_system_ids = tencentcloud_cfs_file_system.cfs[k].id
+      auto_snapshot_policy_id = tencentcloud_cfs_auto_snapshot_policy_attachment.auto_snapshot_policy_attachments[cfs.snapshot_policy_name]
+    } if try(cfs.auto_snapshot, false)
+  }
+}
+resource "tencentcloud_cfs_auto_snapshot_policy_attachment" "auto_snapshot_policy_attachments" {
+  for_each = local.auto_snapshot_policy_attachments
+  auto_snapshot_policy_id = each.value.auto_snapshot_policy_id
+  file_system_ids         = each.value.file_system_ids
+}

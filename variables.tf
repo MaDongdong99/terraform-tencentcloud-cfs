@@ -1,3 +1,8 @@
+#auto snapshot policy
+variable "auto_snapshot_policies" {
+  type = any
+  default = {}
+}
 
 #Access Group
 variable "cfs_access_group_name" {
