@@ -46,7 +46,7 @@ resource "tencentcloud_cfs_auto_snapshot_policy" "policies" {
 locals {
   auto_snapshot_policy_attachments = { for k, cfs in var.cfs_map: k => {
       file_system_ids = tencentcloud_cfs_file_system.cfs[k].id
-      auto_snapshot_policy_id = tencentcloud_cfs_auto_snapshot_policy_attachment.auto_snapshot_policy_attachments[cfs.snapshot_policy_name]
+      auto_snapshot_policy_id = tencentcloud_cfs_auto_snapshot_policy_attachment.auto_snapshot_policy_attachments[cfs.snapshot_policy_key]
     } if try(cfs.auto_snapshot, false)
   }
 }
